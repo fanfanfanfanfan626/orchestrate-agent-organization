@@ -1,0 +1,4 @@
+interface:
+  display_name: "Persistent AI Studio"
+  short_description: "Select, build, operate, and retire AI products"
+  default_prompt: "Use $orchestrate-agent-organization to run a persistent AI studio that selects, builds, operates, pauses, and retires products under human authority."

@@ -1,0 +1,40 @@
+{
+  "schema_version": "assurance-v1",
+  "manifest_id": "replace-with-manifest-id",
+  "decision_id": "replace-with-decision-id",
+  "as_of": "2026-08-27",
+  "authorized_verifiers": ["verifier-example"],
+  "findings": [
+    {
+      "id": "F-001",
+      "severity": "P0",
+      "subject_id": "asset-example",
+      "statement": "A required operating control is not verified",
+      "required_action": "Keep the asset paused until the control is independently verified",
+      "required_evidence_keys": ["control-exercise"],
+      "required_gate_ids": ["G-EXAMPLE-RESUME"]
+    }
+  ],
+  "required_subjects": [
+    {
+      "subject_id": "asset-example",
+      "subject_kind": "external-paused-product",
+      "risk_level": "critical",
+      "current_state": "pause",
+      "money_affected": true,
+      "accountable_owner_principal_id": "owner-example",
+      "required_safe_action": "pause",
+      "allowed_not_applicable": [],
+      "required_authority_gates": [
+        {
+          "id": "G-EXAMPLE-RESUME",
+          "action": "resume",
+          "scope": "broad-production-recovery",
+          "authority": "human",
+          "decision_version": "example-v1"
+        }
+      ]
+    }
+  ],
+  "evidence_catalog": []
+}

@@ -1,0 +1,23 @@
+{
+  "studio_id": "replace-with-studio-id",
+  "company_policy_version": "company-v5",
+  "as_of": "YYYY-MM-DD",
+  "portfolio_active_limit": 2,
+  "investment_envelope": {
+    "investment_units": 20,
+    "human_attention_units": 8,
+    "maintenance_units": 10,
+    "risk_capacity_units": 10
+  },
+  "reserved_envelope": {
+    "investment_units": 0,
+    "human_attention_units": 0,
+    "maintenance_units": 0,
+    "risk_capacity_units": 0
+  },
+  "portfolio_items": [],
+  "product_assets": [],
+  "reality_evidence": [],
+  "capabilities": [],
+  "decision_history": []
+}

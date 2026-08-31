@@ -1,0 +1,69 @@
+{
+  "schema_version": "integration-v2",
+  "decision_id": "replace-with-decision-id",
+  "assurance_manifest": {
+    "id": "replace-with-manifest-id",
+    "sha256": "replace-with-lowercase-sha256"
+  },
+  "review_findings": [
+    {
+      "id": "F-001",
+      "severity": "P0",
+      "subject_id": "asset-example",
+      "statement": "A required operating control is not verified",
+      "required_action": "Keep the asset paused until the control is independently verified",
+      "required_evidence_keys": ["control-exercise"],
+      "required_gate_ids": ["G-EXAMPLE-RESUME"]
+    }
+  ],
+  "obligations": [
+    {
+      "finding_id": "F-001",
+      "severity": "P0",
+      "subject_id": "asset-example",
+      "preserved_requirement": "Keep the asset paused until the control is independently verified",
+      "status": "open-blocker",
+      "owner_principal_id": "owner-example",
+      "required_evidence_keys": ["control-exercise"],
+      "required_gate_ids": ["G-EXAMPLE-RESUME"],
+      "evidence_refs": [],
+      "verified_by": null,
+      "safe_action_if_open": "pause"
+    }
+  ],
+  "operating_controls": [
+    {
+      "subject_id": "asset-example",
+      "subject_kind": "external-paused-product",
+      "risk_level": "critical",
+      "current_state": "pause",
+      "recommended_action": "pause",
+      "money_affected": true,
+      "accountable_owner_principal_id": "owner-example",
+      "controls": {
+        "durable_owner": {"status": "declared-unverified", "evidence_refs": [], "rationale": "The owner record has not been independently checked"},
+        "on_call": {"status": "missing-blocker", "evidence_refs": [], "rationale": "No verified named on-call exists"},
+        "reconciliation": {"status": "proposed", "evidence_refs": [], "rationale": "The reconciliation design is not yet exercised"},
+        "support_surface": {"status": "declared-unverified", "evidence_refs": [], "rationale": "The proposed support path has not been checked"},
+        "slis_alerts": {"status": "proposed", "evidence_refs": [], "rationale": "Alerts remain to be installed and exercised"},
+        "incident_safe_state": {"status": "declared-unverified", "evidence_refs": [], "rationale": "The safe-state claim has not been independently exercised"},
+        "maintenance": {"status": "proposed", "evidence_refs": [], "rationale": "The maintenance envelope is not staffed"},
+        "retirement": {"status": "proposed", "evidence_refs": [], "rationale": "The retirement plan is not approved"},
+        "next_evidence_trigger": {"status": "declared-unverified", "evidence_refs": [], "rationale": "The review trigger has not been independently checked"}
+      }
+    }
+  ],
+  "authority_gates": [
+    {
+      "id": "G-EXAMPLE-RESUME",
+      "subject_id": "asset-example",
+      "action": "resume",
+      "scope": "broad-production-recovery",
+      "authority": "human",
+      "decision_version": "example-v1",
+      "status": "required",
+      "evidence_refs": [],
+      "rationale": "Broad recovery is human-reserved"
+    }
+  ]
+}

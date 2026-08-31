@@ -1,0 +1,13 @@
+{
+  "schema_version": "evidence-attestation-v1",
+  "evidence_id": "replace-with-evidence-id",
+  "decision_id": "replace-with-decision-id",
+  "subject_id": "replace-with-subject-id",
+  "evidence_key": "replace-with-required-evidence-key",
+  "scope": "replace-with-exact-checked-scope",
+  "decision_version": "replace-with-decision-version",
+  "check_result": "pass",
+  "verified_by": "replace-with-authorized-verifier-id",
+  "observed_at": "replace-with-ISO-date",
+  "fresh_until": "replace-with-ISO-date"
+}
