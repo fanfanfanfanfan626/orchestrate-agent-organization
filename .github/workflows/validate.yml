@@ -11,18 +11,19 @@ jobs:
   package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: "pip"
+          cache-dependency-path: "requirements-dev.txt"
       - run: python -m pip install -r requirements-dev.txt
       - run: python tools/validate_release.py
 
   powershell-syntax:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Parse PowerShell scripts
         shell: pwsh
         run: |
