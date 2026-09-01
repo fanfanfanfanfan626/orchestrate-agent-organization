@@ -1,0 +1,26 @@
+# Persistent AI Studio
+
+> Open-source Agent Skill for persistent, human-led, governed multi-agent product work.
+
+Canonical repository: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization
+Skill ID: orchestrate-agent-organization
+Current release: 1.0.0
+License: MIT
+Languages: English, Simplified Chinese
+
+## Use it when
+
+- Product or material feature work must persist across tasks.
+- A portfolio choice, finite investment horizon, or operate/pause/retire decision is needed.
+- A complex authorized project needs an automatically sized, governed multi-agent organization.
+- Product ownership, reality evidence, maintenance, or retirement must remain durable.
+
+## Do not use it for
+
+- Small, tightly sequential tasks one agent can finish efficiently.
+- Organizational theater or simulated departments.
+- Replacing human authorization, external evidence, security review, or professional judgment.
+
+Installation contract: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/AI_INSTALL.md
+English README: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/README.md
+Chinese README: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/README.zh-CN.md

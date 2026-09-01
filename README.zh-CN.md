@@ -1,6 +1,6 @@
 # Persistent AI Studio（持久化 AI 工作室）
 
-[English](README.md) · [AI 安装说明](AI_INSTALL.md) · [参与贡献](CONTRIBUTING.md)
+[产品网页](https://fanfanfanfanfan626.github.io/orchestrate-agent-organization/) · [English](README.md) · [AI 安装说明](AI_INSTALL.md) · [参与贡献](CONTRIBUTING.md)
 
 `orchestrate-agent-organization` 是一个面向 AI Agent 的组织编排 Skill。它让一个主 Agent 在人类掌握最终权力的前提下，选择值得推进的有限阶段、澄清和授权重大产品决策、按真实任务自动确定多 Agent 规模，并把产品责任、现实证据和运行状态延续到后续任务。
 
@@ -33,7 +33,7 @@ Copy-Item ".\orchestrate-agent-organization\skill\orchestrate-agent-organization
 ### macOS 或 Linux
 
 ```bash
-git clone https://github.com/fanfanfanfan626/orchestrate-agent-organization.git
+git clone https://github.com/fanfanfanfanfan626/orchestrate-agent-organization.git
 mkdir -p ~/.codex/skills
 cp -R orchestrate-agent-organization/skill/orchestrate-agent-organization ~/.codex/skills/orchestrate-agent-organization
 ```
@@ -92,3 +92,8 @@ python tools/validate_release.py
 ## 开源协议
 
 MIT，见 [LICENSE](LICENSE)。
+
+## 相关项目
+
+- [Idea Council](https://github.com/fanfanfanfanfan626/challenge-and-refine-ideas)：在重大实施前澄清并反证想法。
+- [Mastery Tutor](https://github.com/fanfanfanfanfan626/mastery-tutor)：为兼容的 AI Agent 提供本地优先的掌握式学习。

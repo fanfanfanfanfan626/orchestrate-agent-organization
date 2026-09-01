@@ -1,6 +1,8 @@
 # Persistent AI Studio
 
-[简体中文](README.zh-CN.md) · [AI installation guide](AI_INSTALL.md) · [Contributing](CONTRIBUTING.md)
+[Website](https://fanfanfanfanfan626.github.io/orchestrate-agent-organization/) · [简体中文](README.zh-CN.md) · [AI installation guide](AI_INSTALL.md) · [Contributing](CONTRIBUTING.md)
+
+[![Release](https://img.shields.io/github/v/release/fanfanfanfanfan626/orchestrate-agent-organization?label=release)](https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/releases)
 
 `orchestrate-agent-organization` is an agent skill for running a persistent, human-led AI studio. It helps an AI lead decide what to build, obtain human authorization for material product decisions, size a multi-agent organization from actual work, preserve product ownership across tasks, and integrate evidence before delivery.
 
@@ -48,7 +50,7 @@ Copy-Item ".\orchestrate-agent-organization\skill\orchestrate-agent-organization
 ### macOS or Linux
 
 ```bash
-git clone https://github.com/fanfanfanfan626/orchestrate-agent-organization.git
+git clone https://github.com/fanfanfanfanfan626/orchestrate-agent-organization.git
 mkdir -p ~/.codex/skills
 cp -R orchestrate-agent-organization/skill/orchestrate-agent-organization ~/.codex/skills/orchestrate-agent-organization
 ```
@@ -107,3 +109,8 @@ The validator checks the skill package shape, frontmatter, UI metadata, referenc
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Related projects
+
+- [Idea Council](https://github.com/fanfanfanfanfan626/challenge-and-refine-ideas) clarifies and stress-tests an idea before consequential implementation.
+- [Mastery Tutor](https://github.com/fanfanfanfanfan626/mastery-tutor) provides local-first mastery learning across compatible AI-agent hosts.
