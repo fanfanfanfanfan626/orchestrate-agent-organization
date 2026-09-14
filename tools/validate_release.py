@@ -21,7 +21,7 @@ SKILL = ROOT / "skill" / "orchestrate-agent-organization"
 SKILL_MD = SKILL / "SKILL.md"
 VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 ARCHIVE = ROOT / "dist" / f"orchestrate-agent-organization-v{VERSION}.zip"
-EXPECTED_ARCHIVE_SHA256 = "99473D9DCC7F0C88AB29D0D68A8518340BBD7878FBAF5BA721A3C8D27630602D"
+EXPECTED_ARCHIVE_SHA256 = "67C03F81D1CF1050DDD52552583A80AEBD162D5F51E15E26B47FAB190A67283A"
 
 REQUIRED_DIRS = ("agents", "assets", "references", "scripts")
 REQUIRED_FILES = (
@@ -131,7 +131,7 @@ def main() -> int:
         if path.is_file()
     } if SKILL.is_dir() else {}
 
-    if VERSION != "1.0.1":
+    if VERSION != "1.0.2":
         fail(errors, f"unexpected release version: {VERSION}")
     if (SKILL / "LICENSE").read_bytes() != (ROOT / "LICENSE").read_bytes():
         fail(errors, "package LICENSE must match the repository LICENSE")

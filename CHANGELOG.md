@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2 — 2026-09-14
+
+- Make release archive member ordering identical on Windows, Linux, and macOS.
+- Canonicalize UTF-8 package text before archiving so host line endings cannot change the published bytes.
+- Keep the 1.0.1 tag immutable after its cross-platform rebuild check exposed the ordering issue.
+
 ## 1.0.1 — 2026-09-14
 
 - Included the MIT license inside the installable Skill and added a deterministic standalone ZIP with a published checksum.
