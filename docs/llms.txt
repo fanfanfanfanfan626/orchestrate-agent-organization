@@ -4,7 +4,7 @@
 
 Canonical repository: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization
 Skill ID: orchestrate-agent-organization
-Current release: 1.0.0
+Current release: 1.0.1
 License: MIT
 Languages: English, Simplified Chinese
 
@@ -24,3 +24,7 @@ Languages: English, Simplified Chinese
 Installation contract: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/AI_INSTALL.md
 English README: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/README.md
 Chinese README: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/README.zh-CN.md
+
+Worked examples: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/EXAMPLES.md
+Compatibility evidence: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/COMPATIBILITY.md
+Support and issue guidance: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/SUPPORT.md

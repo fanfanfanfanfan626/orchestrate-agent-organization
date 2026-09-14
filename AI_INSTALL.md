@@ -11,10 +11,16 @@ Important package facts:
 - The repository root is documentation and release infrastructure.
 - The complete installable skill is `skill/orchestrate-agent-organization/`.
 - Its entry point is `skill/orchestrate-agent-organization/SKILL.md`.
-- Copy the entire skill directory without flattening it; its `agents/`, `assets/`, `references/`, and `scripts/` siblings are required.
+- Copy the entire skill directory without flattening it; its `LICENSE`, `agents/`, `assets/`, `references/`, and `scripts/` siblings are required.
 - Do not search for a root-level `SKILL.md` and do not install only the entry file.
-- Do not copy repository-level files such as `README.md`, `LICENSE`, `tools/`, or `.github/` into the host's skill directory.
+- Do not copy repository-level files such as `README.md`, `tools/`, or `.github/` into the host's skill directory. The package's nested `LICENSE` must remain with the Skill.
 - Do not overwrite an existing installation without first telling the user what will change.
+
+The release page provides `dist/orchestrate-agent-organization-v1.0.1.zip` and a SHA-256 checksum. A matching hash verifies the archive bytes, not host compatibility or real-world outcomes.
+
+```text
+AB007FDE314F32444455934B4CDB94D3A4961FA9F1FDE1BD370D256413019E44
+```
 
 For Codex, the default destination is:
 

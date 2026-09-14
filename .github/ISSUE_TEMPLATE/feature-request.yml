@@ -1,0 +1,22 @@
+name: Feature request
+description: Propose a scoped improvement tied to a real governance or lifecycle gap.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: gap
+    attributes:
+      label: Workflow gap
+      description: What concrete portfolio, organization, execution, integration, or assurance failure is not handled?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome and acceptance evidence
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Authority, risk, and compatibility boundaries

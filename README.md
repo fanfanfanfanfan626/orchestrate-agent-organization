@@ -1,12 +1,13 @@
 # Persistent AI Studio
 
-[Website](https://fanfanfanfanfan626.github.io/orchestrate-agent-organization/) · [简体中文](README.zh-CN.md) · [AI installation guide](AI_INSTALL.md) · [Contributing](CONTRIBUTING.md)
+[Website](https://fanfanfanfanfan626.github.io/orchestrate-agent-organization/) · [简体中文](README.zh-CN.md) · [AI installation guide](AI_INSTALL.md) · [Examples](EXAMPLES.md) · [Compatibility](COMPATIBILITY.md) · [Download v1.0.1 ZIP](dist/orchestrate-agent-organization-v1.0.1.zip) · [Contributing](CONTRIBUTING.md)
 
 [![Release](https://img.shields.io/github/v/release/fanfanfanfanfan626/orchestrate-agent-organization?label=release)](https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/releases)
+[![Validation](https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/actions/workflows/validate.yml/badge.svg)](https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/actions/workflows/validate.yml)
 
 `orchestrate-agent-organization` is an agent skill for running a persistent, human-led AI studio. It helps an AI lead decide what to build, obtain human authorization for material product decisions, size a multi-agent organization from actual work, preserve product ownership across tasks, and integrate evidence before delivery.
 
-It is designed for Codex and can be adapted to other agent hosts that support local skills, command execution, persistent files, and subagent lifecycle tools.
+It is designed for Codex and can be adapted to other agent hosts that support local skills, command execution, persistent files, and subagent lifecycle tools. Package compatibility and verified host behavior are separate; see [COMPATIBILITY.md](COMPATIBILITY.md).
 
 ## Why it exists
 
@@ -63,6 +64,14 @@ Use $orchestrate-agent-organization to turn this product idea into a human-gover
 
 For installation by another AI agent, use [AI_INSTALL.md](AI_INSTALL.md).
 
+The audited standalone package is [`dist/orchestrate-agent-organization-v1.0.1.zip`](dist/orchestrate-agent-organization-v1.0.1.zip). It includes the MIT license.
+
+```text
+SHA-256: AB007FDE314F32444455934B4CDB94D3A4961FA9F1FDE1BD370D256413019E44
+```
+
+Copy-paste product-horizon, portfolio-review, cross-project, and serial-fallback scenarios are in [EXAMPLES.md](EXAMPLES.md).
+
 ## Host requirements
 
 The core governance and planning material is plain Markdown and JSON. Full operation expects:
@@ -110,7 +119,10 @@ The validator checks the skill package shape, frontmatter, UI metadata, referenc
 
 MIT. See [LICENSE](LICENSE).
 
+Questions and contribution standards are documented in [SUPPORT.md](SUPPORT.md), [CONTRIBUTING.md](CONTRIBUTING.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Report sensitive problems through [SECURITY.md](SECURITY.md), not a public Issue.
+
 ## Related projects
 
 - [Idea Council](https://github.com/fanfanfanfanfan626/challenge-and-refine-ideas) clarifies and stress-tests an idea before consequential implementation.
 - [Mastery Tutor](https://github.com/fanfanfanfanfan626/mastery-tutor) provides local-first mastery learning across compatible AI-agent hosts.
+- [Skill Governor](https://github.com/fanfanfanfanfan626/skill-governor) audits and maintains overlapping Agent Skill libraries.

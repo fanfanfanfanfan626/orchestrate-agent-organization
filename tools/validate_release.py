@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 import subprocess
 import sys
 import tempfile
+import zipfile
 from datetime import date
 from pathlib import Path
 
@@ -17,9 +19,13 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "skill" / "orchestrate-agent-organization"
 SKILL_MD = SKILL / "SKILL.md"
+VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+ARCHIVE = ROOT / "dist" / f"orchestrate-agent-organization-v{VERSION}.zip"
+EXPECTED_ARCHIVE_SHA256 = "AB007FDE314F32444455934B4CDB94D3A4961FA9F1FDE1BD370D256413019E44"
 
 REQUIRED_DIRS = ("agents", "assets", "references", "scripts")
 REQUIRED_FILES = (
+    "LICENSE",
     "agents/openai.yaml",
     "assets/assurance-manifest.template.json",
     "assets/evidence-attestation.template.json",
@@ -75,8 +81,50 @@ def parse_frontmatter(text: str, errors: list[str]) -> dict[str, object]:
     return data
 
 
+def validate_archive(errors: list[str], package_files: dict[str, bytes]) -> None:
+    if not ARCHIVE.is_file():
+        fail(errors, f"missing release archive: {ARCHIVE.relative_to(ROOT)}")
+        return
+    digest = hashlib.sha256(ARCHIVE.read_bytes()).hexdigest().upper()
+    if digest != EXPECTED_ARCHIVE_SHA256:
+        fail(errors, f"archive SHA-256 mismatch: {digest}")
+
+    with zipfile.ZipFile(ARCHIVE) as archive:
+        members = {
+            name: archive.read(name)
+            for name in archive.namelist()
+            if not name.endswith("/")
+        }
+    prefix = "orchestrate-agent-organization/"
+    normalized: dict[str, bytes] = {}
+    for name, content in members.items():
+        if not name.startswith(prefix):
+            fail(errors, f"archive member is outside the skill directory: {name}")
+            continue
+        normalized[name[len(prefix) :]] = content
+    if normalized != package_files:
+        missing = sorted(set(package_files) - set(normalized))
+        extra = sorted(set(normalized) - set(package_files))
+        changed = sorted(
+            name
+            for name in set(normalized) & set(package_files)
+            if normalized[name] != package_files[name]
+        )
+        fail(errors, f"archive differs from package; missing={missing}, extra={extra}, changed={changed}")
+
+
 def main() -> int:
     errors: list[str] = []
+    package_files = {
+        path.relative_to(SKILL).as_posix(): path.read_bytes()
+        for path in SKILL.rglob("*")
+        if path.is_file()
+    } if SKILL.is_dir() else {}
+
+    if VERSION != "1.0.1":
+        fail(errors, f"unexpected release version: {VERSION}")
+    if (SKILL / "LICENSE").read_bytes() != (ROOT / "LICENSE").read_bytes():
+        fail(errors, "package LICENSE must match the repository LICENSE")
 
     if not SKILL_MD.is_file():
         print(f"ERROR: missing {SKILL_MD.relative_to(ROOT)}", file=sys.stderr)
@@ -207,13 +255,31 @@ def main() -> int:
             if not isinstance(output, dict):
                 fail(errors, f"runtime smoke test returned a non-object for {script_name}")
 
+    validate_archive(errors, package_files)
+    sums = (ROOT / "SHA256SUMS").read_text(encoding="utf-8").strip()
+    expected_line = f"{EXPECTED_ARCHIVE_SHA256}  {ARCHIVE.relative_to(ROOT).as_posix()}"
+    if sums != expected_line:
+        fail(errors, "SHA256SUMS does not match the release archive")
+
+    public_markers = {
+        ROOT / "README.md": f"orchestrate-agent-organization-v{VERSION}.zip",
+        ROOT / "README.zh-CN.md": f"orchestrate-agent-organization-v{VERSION}.zip",
+        ROOT / "AI_INSTALL.md": f"v{VERSION}",
+        ROOT / "docs" / "index.html": f'"version": "{VERSION}"',
+        ROOT / "docs" / "llms.txt": f"Current release: {VERSION}",
+        ROOT / "CHANGELOG.md": f"## {VERSION}",
+    }
+    for path, marker in public_markers.items():
+        if marker not in path.read_text(encoding="utf-8"):
+            fail(errors, f"{path.relative_to(ROOT)} is missing version marker: {marker}")
+
     if errors:
         for error in errors:
             print(f"ERROR: {error}", file=sys.stderr)
         return 1
 
-    file_count = sum(1 for path in SKILL.rglob("*") if path.is_file())
-    print(f"Validated {file_count} skill files at {SKILL.relative_to(ROOT)}")
+    file_count = len(package_files)
+    print(f"Validated {file_count} skill files and archive {EXPECTED_ARCHIVE_SHA256}")
     return 0
 
 

@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a reproducible planner, validator, package, or governance-contract problem.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Remove credentials, private studio state, local paths, personal data, and confidential product details.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: v1.0.1 or a full commit SHA
+    validations:
+      required: true
+  - type: input
+    id: host
+    attributes:
+      label: Agent host and version
+    validations:
+      required: true
+  - type: textarea
+    id: capabilities
+    attributes:
+      label: Available capabilities
+      description: List roster, child-agent, isolated-context, isolated-workspace, command, and file capabilities relevant to the problem.
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

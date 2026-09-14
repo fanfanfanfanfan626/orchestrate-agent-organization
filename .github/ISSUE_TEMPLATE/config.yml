@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Installation contract
+    url: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/AI_INSTALL.md
+    about: Check package identity and verification before reporting an install problem.
+  - name: Security policy
+    url: https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/security/policy
+    about: Do not disclose sensitive security details in a public Issue.
