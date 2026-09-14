@@ -32,7 +32,7 @@ def main() -> int:
 
     output = args.output if args.output.is_absolute() else ROOT / args.output
     output.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+    with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as archive:
         sources = sorted(
             (path for path in SKILL.rglob("*") if path.is_file()),
             key=lambda path: path.relative_to(SKILL).as_posix(),
@@ -40,9 +40,10 @@ def main() -> int:
         for source in sources:
             relative = source.relative_to(SKILL).as_posix()
             info = zipfile.ZipInfo(f"{PREFIX}/{relative}", (1980, 1, 1, 0, 0, 0))
-            info.compress_type = zipfile.ZIP_DEFLATED
+            info.create_system = 3
+            info.compress_type = zipfile.ZIP_STORED
             info.external_attr = 0o100644 << 16
-            archive.writestr(info, release_bytes(source), compresslevel=9)
+            archive.writestr(info, release_bytes(source))
 
     digest = hashlib.sha256(output.read_bytes()).hexdigest().upper()
     if args.checksum_output:

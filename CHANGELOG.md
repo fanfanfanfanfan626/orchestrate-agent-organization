@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3 — 2026-09-14
+
+- Fix the ZIP creator-platform field and use stored members so release bytes do not depend on the host OS or compression library.
+- Keep the 1.0.2 tag immutable after its cross-platform container check exposed this final metadata difference.
+
 ## 1.0.2 — 2026-09-14
 
 - Make release archive member ordering identical on Windows, Linux, and macOS.

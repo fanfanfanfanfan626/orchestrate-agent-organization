@@ -16,10 +16,10 @@ Important package facts:
 - Do not copy repository-level files such as `README.md`, `tools/`, or `.github/` into the host's skill directory. The package's nested `LICENSE` must remain with the Skill.
 - Do not overwrite an existing installation without first telling the user what will change.
 
-The release page provides `dist/orchestrate-agent-organization-v1.0.2.zip` and a SHA-256 checksum. A matching hash verifies the archive bytes, not host compatibility or real-world outcomes.
+The release page provides `dist/orchestrate-agent-organization-v1.0.3.zip` and a SHA-256 checksum. A matching hash verifies the archive bytes, not host compatibility or real-world outcomes.
 
 ```text
-67C03F81D1CF1050DDD52552583A80AEBD162D5F51E15E26B47FAB190A67283A
+28426316988555CE60786AC2275BA484F74C29D285D563BD397F609EE3AA8423
 ```
 
 For Codex, the default destination is:

@@ -1,6 +1,6 @@
 # Persistent AI Studio（持久化 AI 工作室）
 
-[产品网页](https://fanfanfanfanfan626.github.io/orchestrate-agent-organization/) · [English](README.md) · [AI 安装说明](AI_INSTALL.md) · [使用示例](EXAMPLES.md) · [兼容性证据](COMPATIBILITY.md) · [下载 v1.0.2 ZIP](dist/orchestrate-agent-organization-v1.0.2.zip) · [参与贡献](CONTRIBUTING.md)
+[产品网页](https://fanfanfanfanfan626.github.io/orchestrate-agent-organization/) · [English](README.md) · [AI 安装说明](AI_INSTALL.md) · [使用示例](EXAMPLES.md) · [兼容性证据](COMPATIBILITY.md) · [下载 v1.0.3 ZIP](dist/orchestrate-agent-organization-v1.0.3.zip) · [参与贡献](CONTRIBUTING.md)
 
 `orchestrate-agent-organization` 是一个面向 AI Agent 的组织编排 Skill。它让一个主 Agent 在人类掌握最终权力的前提下，选择值得推进的有限阶段、澄清和授权重大产品决策、按真实任务自动确定多 Agent 规模，并把产品责任、现实证据和运行状态延续到后续任务。
 
@@ -46,10 +46,10 @@ cp -R orchestrate-agent-organization/skill/orchestrate-agent-organization ~/.cod
 
 如果让另一个 AI 帮你安装，请把 [AI_INSTALL.md](AI_INSTALL.md) 交给它。
 
-经过审查的独立分发包是 [`dist/orchestrate-agent-organization-v1.0.2.zip`](dist/orchestrate-agent-organization-v1.0.2.zip)，其中包含 MIT 许可证。
+经过审查的独立分发包是 [`dist/orchestrate-agent-organization-v1.0.3.zip`](dist/orchestrate-agent-organization-v1.0.3.zip)，其中包含 MIT 许可证。
 
 ```text
-SHA-256: 67C03F81D1CF1050DDD52552583A80AEBD162D5F51E15E26B47FAB190A67283A
+SHA-256: 28426316988555CE60786AC2275BA484F74C29D285D563BD397F609EE3AA8423
 ```
 
 可直接复制的产品阶段、组合复核、跨项目改进和串行回退场景见 [EXAMPLES.md](EXAMPLES.md)。
