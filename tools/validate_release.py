@@ -21,7 +21,7 @@ SKILL = ROOT / "skill" / "orchestrate-agent-organization"
 SKILL_MD = SKILL / "SKILL.md"
 VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 ARCHIVE = ROOT / "dist" / f"orchestrate-agent-organization-v{VERSION}.zip"
-EXPECTED_ARCHIVE_SHA256 = "AB007FDE314F32444455934B4CDB94D3A4961FA9F1FDE1BD370D256413019E44"
+EXPECTED_ARCHIVE_SHA256 = "99473D9DCC7F0C88AB29D0D68A8518340BBD7878FBAF5BA721A3C8D27630602D"
 
 REQUIRED_DIRS = ("agents", "assets", "references", "scripts")
 REQUIRED_FILES = (
@@ -56,6 +56,16 @@ LOCAL_OR_SECRET_PATTERNS = {
     "GitHub token": re.compile(r"(?:ghp_[A-Za-z0-9]+|github_pat_[A-Za-z0-9_]+)"),
     "private key": re.compile(r"BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY"),
 }
+
+
+def release_bytes(source: Path) -> bytes:
+    """Return the canonical bytes used by the cross-platform release builder."""
+    data = source.read_bytes()
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError:
+        return data
+    return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
 
 
 def fail(errors: list[str], message: str) -> None:
@@ -116,7 +126,7 @@ def validate_archive(errors: list[str], package_files: dict[str, bytes]) -> None
 def main() -> int:
     errors: list[str] = []
     package_files = {
-        path.relative_to(SKILL).as_posix(): path.read_bytes()
+        path.relative_to(SKILL).as_posix(): release_bytes(path)
         for path in SKILL.rglob("*")
         if path.is_file()
     } if SKILL.is_dir() else {}

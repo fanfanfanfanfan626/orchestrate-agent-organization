@@ -19,7 +19,7 @@ Important package facts:
 The release page provides `dist/orchestrate-agent-organization-v1.0.1.zip` and a SHA-256 checksum. A matching hash verifies the archive bytes, not host compatibility or real-world outcomes.
 
 ```text
-AB007FDE314F32444455934B4CDB94D3A4961FA9F1FDE1BD370D256413019E44
+99473D9DCC7F0C88AB29D0D68A8518340BBD7878FBAF5BA721A3C8D27630602D
 ```
 
 For Codex, the default destination is:

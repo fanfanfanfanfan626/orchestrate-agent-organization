@@ -49,7 +49,7 @@ cp -R orchestrate-agent-organization/skill/orchestrate-agent-organization ~/.cod
 经过审查的独立分发包是 [`dist/orchestrate-agent-organization-v1.0.1.zip`](dist/orchestrate-agent-organization-v1.0.1.zip)，其中包含 MIT 许可证。
 
 ```text
-SHA-256: AB007FDE314F32444455934B4CDB94D3A4961FA9F1FDE1BD370D256413019E44
+SHA-256: 99473D9DCC7F0C88AB29D0D68A8518340BBD7878FBAF5BA721A3C8D27630602D
 ```
 
 可直接复制的产品阶段、组合复核、跨项目改进和串行回退场景见 [EXAMPLES.md](EXAMPLES.md)。

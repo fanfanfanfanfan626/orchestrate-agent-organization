@@ -14,6 +14,16 @@ SKILL = ROOT / "skill" / "orchestrate-agent-organization"
 PREFIX = "orchestrate-agent-organization"
 
 
+def release_bytes(source: Path) -> bytes:
+    """Normalize UTF-8 package text so the archive is host-independent."""
+    data = source.read_bytes()
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError:
+        return data
+    return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
@@ -28,7 +38,7 @@ def main() -> int:
             info = zipfile.ZipInfo(f"{PREFIX}/{relative}", (1980, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
-            archive.writestr(info, source.read_bytes(), compresslevel=9)
+            archive.writestr(info, release_bytes(source), compresslevel=9)
 
     digest = hashlib.sha256(output.read_bytes()).hexdigest().upper()
     if args.checksum_output:

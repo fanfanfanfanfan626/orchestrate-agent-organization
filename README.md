@@ -67,7 +67,7 @@ For installation by another AI agent, use [AI_INSTALL.md](AI_INSTALL.md).
 The audited standalone package is [`dist/orchestrate-agent-organization-v1.0.1.zip`](dist/orchestrate-agent-organization-v1.0.1.zip). It includes the MIT license.
 
 ```text
-SHA-256: AB007FDE314F32444455934B4CDB94D3A4961FA9F1FDE1BD370D256413019E44
+SHA-256: 99473D9DCC7F0C88AB29D0D68A8518340BBD7878FBAF5BA721A3C8D27630602D
 ```
 
 Copy-paste product-horizon, portfolio-review, cross-project, and serial-fallback scenarios are in [EXAMPLES.md](EXAMPLES.md).
