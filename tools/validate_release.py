@@ -255,6 +255,22 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="persistent-ai-studio-") as temp_dir:
         temp = Path(temp_dir)
+        # Maintainers may build outside the checkout. Never leak absolute paths
+        # into its sidecar, and never change already published archive bytes.
+        rebuilt = temp / 'bundle.zip'
+        sidecar = temp / 'SHA256SUMS'
+        result = subprocess.run(
+            [sys.executable, str(ROOT / 'tools/build_release.py'), '--output', str(rebuilt),
+             '--checksum-output', str(sidecar)], capture_output=True, text=True, timeout=30,
+        )
+        if result.returncode != 0 or not rebuilt.is_file() or not sidecar.is_file():
+            fail(errors, f'external absolute archive build failed: {result.stderr.strip()}')
+        else:
+            digest = hashlib.sha256(rebuilt.read_bytes()).hexdigest().upper()
+            if sidecar.read_text().split() != [digest, rebuilt.name]:
+                fail(errors, 'external archive sidecar must contain its digest and basename')
+            if not ARCHIVE.is_file() or rebuilt.read_bytes() != ARCHIVE.read_bytes():
+                fail(errors, 'external rebuild differs from the immutable published archive')
         smoke_cases = (
             ("plan_capacity.py", capacity_fixture),
             ("plan_portfolio.py", studio_fixture),
