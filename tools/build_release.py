@@ -32,11 +32,14 @@ def main() -> int:
 
     output = args.output if args.output.is_absolute() else ROOT / args.output
     output.parent.mkdir(parents=True, exist_ok=True)
+    sources = sorted(
+        (path for path in SKILL.rglob("*") if path.is_file()),
+        key=lambda path: path.relative_to(SKILL).as_posix(),
+    )
+    for source in sources:
+        if source.is_symlink() or '__pycache__' in source.parts or source.suffix in {'.pyc','.pyo'}:
+            raise SystemExit(f'Refusing generated or linked package file: {source.relative_to(SKILL)}')
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as archive:
-        sources = sorted(
-            (path for path in SKILL.rglob("*") if path.is_file()),
-            key=lambda path: path.relative_to(SKILL).as_posix(),
-        )
         for source in sources:
             relative = source.relative_to(SKILL).as_posix()
             info = zipfile.ZipInfo(f"{PREFIX}/{relative}", (1980, 1, 1, 0, 0, 0))

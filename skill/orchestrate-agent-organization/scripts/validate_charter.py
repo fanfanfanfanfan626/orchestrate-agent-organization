@@ -344,13 +344,13 @@ def main() -> int:
     try:
         errors, warnings = validate(load_json(args.parent), load_json(args.child))
     except (OSError, json.JSONDecodeError, ValueError) as exc:
-        print(json.dumps({"valid": False, "errors": [str(exc)], "warnings": []}, ensure_ascii=False, indent=2))
+        print(json.dumps({"valid": False, "errors": [str(exc)], "warnings": []}, ensure_ascii=True, indent=2))
         return 2
 
     print(
         json.dumps(
             {"valid": not errors, "errors": errors, "warnings": warnings},
-            ensure_ascii=False,
+            ensure_ascii=True,
             indent=2,
         )
     )

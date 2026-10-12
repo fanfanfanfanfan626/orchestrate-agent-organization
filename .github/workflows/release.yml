@@ -9,7 +9,16 @@ permissions:
   contents: write
 
 jobs:
+  parity:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - run: python tools/test_script_parity.py
   release:
+    needs: parity
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

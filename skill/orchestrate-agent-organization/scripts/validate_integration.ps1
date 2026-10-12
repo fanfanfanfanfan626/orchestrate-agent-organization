@@ -6,6 +6,24 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+# Match Python Unicode scalar ordering, including non-BMP characters; never culture collation.
+function Get-UnicodeScalarSortKey {
+    param([AllowEmptyString()] [string]$Value)
+    $builder = [System.Text.StringBuilder]::new()
+    for ($index = 0; $index -lt $Value.Length;) {
+        $first = [int][char]$Value[$index]
+        if ([char]::IsHighSurrogate($Value[$index]) -and $index + 1 -lt $Value.Length -and [char]::IsLowSurrogate($Value[$index + 1])) {
+            $scalar = [char]::ConvertToUtf32($Value, $index)
+            $index += 2
+        } else {
+            $scalar = $first
+            $index += 1
+        }
+        [void]$builder.Append($scalar.ToString("X8", [Globalization.CultureInfo]::InvariantCulture))
+    }
+    return $builder.ToString()
+}
 $packetVersion = "integration-v2"
 $manifestVersion = "assurance-v1"
 $severities = @("P0", "P1", "P2")
@@ -118,8 +136,8 @@ function Test-ExactControlKeys {
 function Test-ExactObjectKeys {
     param($Object,[string[]]$Expected,[string]$Label)
     $actual=New-OrdinalSet;foreach($property in $Object.PSObject.Properties){[void]$actual.Add($property.Name)}
-    foreach($field in @($Expected|Sort-Object -CaseSensitive)){if(-not$actual.Contains($field)){Add-ValidationError "$Label is missing $field"}}
-    foreach($field in @($actual|Sort-Object -CaseSensitive)){if(-not(Test-InSet $field $Expected)){Add-ValidationError "$Label has unexpected field $field"}}
+    foreach($field in @($Expected|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})){if(-not$actual.Contains($field)){Add-ValidationError "$Label is missing $field"}}
+    foreach($field in @($actual|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})){if(-not(Test-InSet $field $Expected)){Add-ValidationError "$Label has unexpected field $field"}}
 }
 function Get-FileShaLower { param([string]$Path) return (Get-FileHash -Algorithm SHA256 -LiteralPath $Path).Hash.ToLowerInvariant() }
 function Test-BoundEvidenceFile {
@@ -142,8 +160,8 @@ function Test-Attestation {
     if($null-eq$raw-or$raw-is[string]-or$raw-is[ValueType]-or$raw-is[System.Array]){Add-ValidationError "$Label must be a JSON object";return}
     $expected=[ordered]@{schema_version="evidence-attestation-v1";evidence_id=$Record.id;decision_id=$DecisionId;subject_id=$Record.subject_id;evidence_key=$Record.evidence_key;scope=$Record.scope;decision_version=$Record.decision_version;check_result=$Record.check_result;verified_by=$Record.verified_by;observed_at=$Record.observed_at;fresh_until=$Record.fresh_until}
     $actual=New-OrdinalSet;foreach($property in $raw.PSObject.Properties){[void]$actual.Add($property.Name)}
-    foreach($field in @($expected.Keys|Sort-Object -CaseSensitive)){if(-not$actual.Contains($field)){Add-ValidationError "$Label is missing $field"}}
-    foreach($field in @($actual|Sort-Object -CaseSensitive)){if(-not$expected.Contains($field)){Add-ValidationError "$Label has unexpected field $field"}}
+    foreach($field in @($expected.Keys|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})){if(-not$actual.Contains($field)){Add-ValidationError "$Label is missing $field"}}
+    foreach($field in @($actual|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})){if(-not$expected.Contains($field)){Add-ValidationError "$Label has unexpected field $field"}}
     foreach($field in $expected.Keys){if(-not(Test-Ordinal (Get-Value $raw $field) $expected[$field])){Add-ValidationError "$Label.$field does not match its evidence record"}}
 }
 
@@ -328,7 +346,7 @@ function Get-CanonicalDelivery {
     param([string]$DecisionId,[string]$ManifestId,[string]$ManifestSha,$SubjectResults)
     $lines = [System.Collections.Generic.List[string]]::new()
     $lines.Add("# Integration decision: $DecisionId"); $lines.Add("Manifest: $ManifestId @ sha256:$ManifestSha"); $lines.Add("")
-    foreach ($subjectId in @($SubjectResults.Keys | Sort-Object -CaseSensitive)) {
+    foreach ($subjectId in @($SubjectResults.Keys | Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})) {
         $subject = $SubjectResults[$subjectId]; $verdict = if ($subject.advancement_allowed) { "ADVANCEMENT-ALLOWED" } else { "HOLD" }
         $lines.Add("- $($subjectId): $verdict; action=$($subject.recommended_action)")
         $open = if (@($subject.open_high).Count) { @($subject.open_high) -join ", " } else { "none" }
@@ -415,7 +433,7 @@ for($index=0;$index-lt$controlPackets.Count;$index++){
     foreach($field in $controlFields){$fieldLabel="$label.controls.$field";$control=Get-Value $controls $field;if($null-eq$control-or$control-is[string]-or$control-is[ValueType]-or$control-is[System.Array]){Add-ValidationError "$fieldLabel must be an object";continue};Test-ExactObjectKeys $control @("status","evidence_refs","rationale") $fieldLabel;$status=Require-String $control "status" $fieldLabel;$refs=@(Get-EvidenceRefs (Get-Value $control "evidence_refs") "$fieldLabel.evidence_refs" $manifest);$rationale=Require-String $control "rationale" $fieldLabel;Require-Enum $status $controlStatuses "$fieldLabel.status";if((Test-Ordinal $status "verified")-and-not(Test-EvidenceCoverage $refs @("control:$field") $subjectId $manifest)){Add-ValidationError "$fieldLabel.verified control lacks matching manifest evidence"};if((Test-Ordinal $status "verified")-and-not(Test-Ordinal $rationale (Get-EvidenceRationale $refs))){Add-ValidationError "$fieldLabel.verified control rationale is not canonical"};if((Test-Ordinal $status "not-applicable")-and-not(Test-InSet $field $source.allowed_not_applicable)){Add-ValidationError "$fieldLabel.not-applicable is not allowed by source manifest"};if((Test-Ordinal $status "not-applicable")-and(Test-InSet $riskLevel @("high","critical"))){$mandatory=(Test-InSet $field $mandatoryHighRiskControls)-or((Test-Ordinal $field "support_surface")-and(Test-InSet $subjectKind @("product-asset","external-paused-product")))-or((Test-Ordinal $field "reconciliation")-and$moneyAffected);if($mandatory){Add-ValidationError "$fieldLabel.not-applicable violates the high-risk applicability matrix"}};if(Test-InSet $status @("declared-unverified","proposed","missing-blocker")){$blockingFields.Add($field)};$controlStates[$field]=$status}
     $openHigh=[System.Collections.Generic.List[string]]::new();foreach($findingId in $obligationMap.Keys){$obligation=$obligationMap[$findingId];if((Test-Ordinal $obligation.subject_id $subjectId)-and(Test-InSet $obligation.severity @("P0","P1"))-and-not(Test-Ordinal $obligation.status "verified-closed")){$openHigh.Add($findingId)}}
     $unsatisfied=[System.Collections.Generic.List[string]]::new();foreach($gateId in $packetGates.Keys){$gate=$packetGates[$gateId];if((Test-Ordinal $gate.subject_id $subjectId)-and(Test-Ordinal $gate.status "required")){$unsatisfied.Add($gateId)}}
-    $openArray=@($openHigh|Sort-Object -CaseSensitive);$blockArray=@($blockingFields|Sort-Object -CaseSensitive);$gateArray=@($unsatisfied|Sort-Object -CaseSensitive);$blockers=$openArray.Count-gt0-or$blockArray.Count-gt0-or$gateArray.Count-gt0;$advancementAllowed=(-not$blockers)-and(Test-InSet $recommendedAction $advanceActions)
+    $openArray=@($openHigh|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}});$blockArray=@($blockingFields|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}});$gateArray=@($unsatisfied|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}});$blockers=$openArray.Count-gt0-or$blockArray.Count-gt0-or$gateArray.Count-gt0;$advancementAllowed=(-not$blockers)-and(Test-InSet $recommendedAction $advanceActions)
     if((Test-InSet $recommendedAction $safeActions)-and-not(Test-Ordinal $recommendedAction $source.required_safe_action)){Add-ValidationError "$label.safe action conflicts with source manifest"};if($blockers-and-not(Test-Ordinal $recommendedAction $source.required_safe_action)){Add-ValidationError "$label.blockers require the manifest safe action"};if((Test-InSet $recommendedAction $advanceActions)-and$blockers){Add-ValidationError "$label attempts advancement while blockers remain"};$subjectGates=@($packetGates.Values|Where-Object{Test-Ordinal $_.subject_id $subjectId});if((Test-InSet $recommendedAction $advanceActions)-and$subjectGates.Count-gt0-and@($subjectGates|Where-Object{Test-Ordinal $_.action $recommendedAction}).Count-eq0){Add-ValidationError "$label.advancement action lacks an exact manifest gate"}
     if((Test-InSet $recommendedAction $advanceActions)-and(Test-InSet $riskLevel @("high","critical"))){foreach($state in $controlStates.Values){if(-not(Test-InSet $state @("verified","not-applicable"))){Add-ValidationError "$label.high-risk advancement lacks verified controls";break}}}
     if($blockers){$warnings.Add("$subjectId remains non-advancing until manifest-bound blockers close")};$subjectResults[$subjectId]=@{recommended_action=$recommendedAction;advancement_allowed=$advancementAllowed;open_high=$openArray;blocking_controls=$blockArray;unsatisfied_gates=$gateArray}
@@ -423,8 +441,8 @@ for($index=0;$index-lt$controlPackets.Count;$index++){
 $manifestSubjectSet=New-OrdinalSet;foreach($key in $manifest.subjects.Keys){[void]$manifestSubjectSet.Add($key)};if($packetSubjectIds.Count-ne$manifestSubjectSet.Count){Add-ValidationError "packet operating-control subjects do not exactly match manifest"}else{foreach($key in $packetSubjectIds){if(-not$manifestSubjectSet.Contains($key)){Add-ValidationError "packet operating-control subjects do not exactly match manifest";break}}}
 
 $valid=$errors.Count-eq0;$delivery=$null;$deliverySha=$null;if($valid){$delivery=Get-CanonicalDelivery $decisionId $manifest.manifest_id $manifest.sha256 $subjectResults;$deliverySha=Get-StringShaLower $delivery}
-$advancement=[ordered]@{};foreach($key in @($subjectResults.Keys|Sort-Object -CaseSensitive)){$advancement[$key]=[bool]($valid-and$subjectResults[$key].advancement_allowed)}
+$advancement=[ordered]@{};foreach($key in @($subjectResults.Keys|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})){$advancement[$key]=[bool]($valid-and$subjectResults[$key].advancement_allowed)}
 $openAll=[System.Collections.Generic.List[string]]::new();$controlAll=[System.Collections.Generic.List[string]]::new();$gateAll=[System.Collections.Generic.List[string]]::new()
 foreach($subjectId in $subjectResults.Keys){foreach($id in @($subjectResults[$subjectId].open_high)){$openAll.Add($id)};foreach($field in @($subjectResults[$subjectId].blocking_controls)){$controlAll.Add("$($subjectId):$field")};foreach($id in @($subjectResults[$subjectId].unsatisfied_gates)){$gateAll.Add($id)}}
-$result=[ordered]@{valid=$valid;schema_version=$packetVersion;manifest_version=$manifestVersion;decision_id=$decisionId;manifest_id=$manifest.manifest_id;manifest_sha256=$manifest.sha256;expected_manifest_sha256=$ExpectedManifestSha;advancement_allowed_by_subject=$advancement;open_high_severity_obligations=@($openAll|Sort-Object -CaseSensitive -Unique);blocking_control_fields=@($controlAll|Sort-Object -CaseSensitive -Unique);unsatisfied_authority_gates=@($gateAll|Sort-Object -CaseSensitive -Unique);canonical_delivery_markdown=$delivery;canonical_delivery_sha256=$deliverySha;errors=@($errors);warnings=@($warnings|Sort-Object -CaseSensitive -Unique)}
+$result=[ordered]@{valid=$valid;schema_version=$packetVersion;manifest_version=$manifestVersion;decision_id=$decisionId;manifest_id=$manifest.manifest_id;manifest_sha256=$manifest.sha256;expected_manifest_sha256=$ExpectedManifestSha;advancement_allowed_by_subject=$advancement;open_high_severity_obligations=@($openAll|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}} -Unique);blocking_control_fields=@($controlAll|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}} -Unique);unsatisfied_authority_gates=@($gateAll|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}} -Unique);canonical_delivery_markdown=$delivery;canonical_delivery_sha256=$deliverySha;errors=@($errors);warnings=@($warnings|Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}} -Unique)}
 Write-ResultAndExit $result $(if($valid){0}else{2})

@@ -5,6 +5,24 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+# Match Python Unicode scalar ordering, including non-BMP characters; never culture collation.
+function Get-UnicodeScalarSortKey {
+    param([AllowEmptyString()] [string]$Value)
+    $builder = [System.Text.StringBuilder]::new()
+    for ($index = 0; $index -lt $Value.Length;) {
+        $first = [int][char]$Value[$index]
+        if ([char]::IsHighSurrogate($Value[$index]) -and $index + 1 -lt $Value.Length -and [char]::IsLowSurrogate($Value[$index + 1])) {
+            $scalar = [char]::ConvertToUtf32($Value, $index)
+            $index += 2
+        } else {
+            $scalar = $first
+            $index += 1
+        }
+        [void]$builder.Append($scalar.ToString("X8", [Globalization.CultureInfo]::InvariantCulture))
+    }
+    return $builder.ToString()
+}
 $budgetKeys = @("token_units", "cash", "compute_units")
 $lifecycleStages = @("control", "discovery", "design", "build", "integrate", "verify", "release", "operate", "maintain", "debug", "evolve", "retire")
 $cognitiveModes = @("organizational-control", "portfolio-stewardship", "founder-partner", "product-discovery", "reuse-first-research", "architecture-first-principles", "implementation", "adversarial-review", "test-and-falsify", "debug-and-incident", "maintenance-stewardship", "security-abuse", "operations-reliability", "integration-release")
@@ -135,7 +153,7 @@ try {
     $activeAgents = Get-StringPropertySet $parentData "runtime_active_agents" "parent.runtime_active_agents" $errors
     if ($parentId -is [string] -and -not $activeAgents.ContainsKey($parentId)) { Add-Error $errors "parent.runtime_active_agents must contain parent.id" }
     $authorizedAuditors = Get-StringPropertySet $parentData "authorized_auditor_ids" "parent.authorized_auditor_ids" $errors
-    $inactiveAuditors = @($authorizedAuditors.Keys | Where-Object { -not $activeAgents.ContainsKey($_) } | Sort-Object)
+    $inactiveAuditors = @($authorizedAuditors.Keys | Where-Object { -not $activeAgents.ContainsKey($_) } | Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})
     if ($inactiveAuditors.Count -gt 0) { Add-Error $errors ("parent.authorized_auditor_ids contains inactive ids: " + ($inactiveAuditors -join ", ")) }
 
     $parentPolicy = Get-Value $parentData "company_policy_version" $null
@@ -167,9 +185,9 @@ try {
     $parentDelegable = Get-StringPropertySet $parentData "delegable_permissions" "parent.delegable_permissions" $errors
     $childPermissions = Get-StringPropertySet $childData "permissions" "child.permissions" $errors
     $childDelegable = Get-StringPropertySet $childData "delegable_permissions" "child.delegable_permissions" $errors
-    $excessPermissions = @($childPermissions.Keys | Where-Object { -not $parentDelegable.ContainsKey($_) } | Sort-Object)
+    $excessPermissions = @($childPermissions.Keys | Where-Object { -not $parentDelegable.ContainsKey($_) } | Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})
     if ($excessPermissions.Count -gt 0) { Add-Error $errors ("child permissions exceed parent delegation: " + ($excessPermissions -join ", ")) }
-    $excessDelegable = @($childDelegable.Keys | Where-Object { -not $childPermissions.ContainsKey($_) } | Sort-Object)
+    $excessDelegable = @($childDelegable.Keys | Where-Object { -not $childPermissions.ContainsKey($_) } | Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})
     if ($excessDelegable.Count -gt 0) { Add-Error $errors ("child delegates permissions it does not hold: " + ($excessDelegable -join ", ")) }
     if ($learningAuthority -eq "commit-approved" -and -not $childPermissions.ContainsKey("memory:write-approved")) {
         Add-Error $errors "child.learning_authority commit-approved requires memory:write-approved permission"

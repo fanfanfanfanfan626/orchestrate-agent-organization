@@ -1178,7 +1178,7 @@ def main() -> int:
             "errors": [str(exc)],
             "warnings": [],
         }
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(result, ensure_ascii=True, indent=2))
     return 0 if result.get("valid") else 2
 
 

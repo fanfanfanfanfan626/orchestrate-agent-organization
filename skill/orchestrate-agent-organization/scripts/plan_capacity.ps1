@@ -5,11 +5,29 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+# Match Python Unicode scalar ordering, including non-BMP characters; never culture collation.
+function Get-UnicodeScalarSortKey {
+    param([AllowEmptyString()] [string]$Value)
+    $builder = [System.Text.StringBuilder]::new()
+    for ($index = 0; $index -lt $Value.Length;) {
+        $first = [int][char]$Value[$index]
+        if ([char]::IsHighSurrogate($Value[$index]) -and $index + 1 -lt $Value.Length -and [char]::IsLowSurrogate($Value[$index + 1])) {
+            $scalar = [char]::ConvertToUtf32($Value, $index)
+            $index += 2
+        } else {
+            $scalar = $first
+            $index += 1
+        }
+        [void]$builder.Append($scalar.ToString("X8", [Globalization.CultureInfo]::InvariantCulture))
+    }
+    return $builder.ToString()
+}
 $tokenModelVersion = "organizational-fitness-v2"
 $supportedCompanyPolicyVersion = "company-v5"
 $authoritativeRuntimeSources = @("collaboration.list_agents")
 $founderCharterStatuses = @("not-required", "raw", "framed", "explored", "decision-ready", "authorized")
-$preAuthorizationStages = @("control", "discovery", "design", "verify")
+$preAuthorizationStages = @("control", "design", "discovery", "verify")
 $lifecycleStages = @("control", "discovery", "design", "build", "integrate", "verify", "release", "operate", "maintain", "debug", "evolve", "retire")
 $cognitiveModes = @("organizational-control", "portfolio-stewardship", "founder-partner", "product-discovery", "reuse-first-research", "architecture-first-principles", "implementation", "adversarial-review", "test-and-falsify", "debug-and-incident", "maintenance-stewardship", "security-abuse", "operations-reliability", "integration-release")
 $defaultModeByStage = @{
@@ -228,7 +246,7 @@ try {
     }
 
     if (-not $founderAuthorized) {
-        $disallowed = @($items | Where-Object { $preAuthorizationStages -notcontains $_.lifecycle_stage } | ForEach-Object { $_.id } | Sort-Object)
+        $disallowed = @($items | Where-Object { $preAuthorizationStages -notcontains $_.lifecycle_stage } | ForEach-Object { $_.id } | Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})
         if ($disallowed.Count -gt 0) {
             throw "pre-authorization capacity input contains implementation stages: $($disallowed -join ', ')"
         }
@@ -239,7 +257,7 @@ try {
     })
     $tokenEfficientCandidates = @($potentialCandidates | Where-Object { $_.net_delegation_savings -gt 0 })
     $candidates = @($potentialCandidates | Where-Object { $_.organization_value -gt 0 } |
-        Sort-Object -Property @{Expression = "organization_value"; Descending = $true}, @{Expression = "effort"; Descending = $true}, @{Expression = "risk"; Descending = $true}, @{Expression = "id"; Descending = $false})
+        Sort-Object -Property @{Expression = "organization_value"; Descending = $true}, @{Expression = "effort"; Descending = $true}, @{Expression = "risk"; Descending = $true}, @{Expression = { Get-UnicodeScalarSortKey ([string]$_.id) }; Descending = $false})
     $materialRisk = @($items | Where-Object {
         $_.risk -ge 3 -or $_.requires_independent_verification
     }).Count -gt 0
@@ -321,7 +339,7 @@ try {
     }
     elseif ($workerCount -gt 0) {
         $noun = if ($workerCount -eq 1) { "child" } else { "children" }
-        $driverNames = @($delegated | ForEach-Object { $_.selection_drivers } | Sort-Object -Unique)
+        $driverNames = @($delegated | ForEach-Object { $_.selection_drivers } | Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}} -Unique)
         $executionTokenDelta = $decompositionDifficultySavings - $contextPacketTotal - $integrationOverheadTotal
         $reasons += "$($candidates.Count) organizationally valuable workstreams justify $workerCount worker $noun for $($driverNames -join ', '); net execution token delta (positive means savings) is $executionTokenDelta units before assurance."
     }
