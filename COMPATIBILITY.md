@@ -2,7 +2,8 @@
 
 | Environment or capability | Status | Evidence and limit |
 | --- | --- | --- |
-| Repository and standalone ZIP | Verified for 1.0.3 | Validation checks required files, metadata, references, templates, Python syntax, CLI help, planner smoke cases, PowerShell parsing in CI, archive bytes, and checksum. |
+| Repository and standalone ZIP | Verified for 1.0.4 | Validation checks required files, metadata, references, templates, Python syntax, CLI help, planner smoke cases, PowerShell parsing in CI, archive bytes, and checksum. |
+| Python / PowerShell regression corpus | Deterministic test gate | Four tools are compared on valid, boundary, invalid and Unicode tie-break cases, including canonical output hashes. This is a bounded corpus, not proof of equivalence for all inputs or live-agent behavior. Python JSON output uses ASCII escapes so non-ASCII values do not crash legacy Windows stdout encodings; parsed values are unchanged. |
 | Codex Skill discovery | Package-compatible | The directory follows the local Skill layout. A named, repeatable end-to-end host evaluation is not yet published as a repository artifact. |
 | Other Agent Skills hosts | Portable serial workflow | Hosts must preserve relative files and provide equivalent file and command capabilities. Discovery and rule routing must be verified separately. |
 | Multi-agent organization | Capability-dependent | Requires live roster, create, message, wait, interrupt, reuse, and isolated workspace/context capabilities. |

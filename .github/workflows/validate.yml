@@ -24,6 +24,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Compare Python and PowerShell behavior
+        run: python tools/test_script_parity.py
       - name: Parse PowerShell scripts
         shell: pwsh
         run: |

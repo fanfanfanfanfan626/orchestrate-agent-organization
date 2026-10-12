@@ -29,7 +29,7 @@
     "license": "https://opensource.org/license/mit",
     "programmingLanguage": ["Markdown", "Python", "PowerShell"],
     "runtimePlatform": "Agent Skills hosts",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "inLanguage": ["en", "zh-CN"]
   }
   </script>
@@ -67,12 +67,12 @@
 </head>
 <body>
   <div class="wrap">
-    <nav><b>Persistent AI Studio · v1.0.3</b><div><a href="#install">Install</a><a href="#中文">中文</a><a href="https://github.com/fanfanfanfanfan626/orchestrate-agent-organization">GitHub</a></div></nav>
+    <nav><b>Persistent AI Studio · v1.0.4</b><div><a href="#install">Install</a><a href="#中文">中文</a><a href="https://github.com/fanfanfanfanfan626/orchestrate-agent-organization">GitHub</a></div></nav>
     <header>
       <p class="eyebrow">Open-source Agent Skill</p>
       <h1>Keep the product alive after the task ends.</h1>
       <p class="lede">Persistent AI Studio gives an AI lead a governed operating model for product work that spans tasks: portfolio choices, human authorization, right-sized agent teams, bounded permissions, independent assurance, and long-term ownership.</p>
-      <div class="actions"><a class="button primary" href="#install">Install the Skill</a><a class="button" href="https://github.com/fanfanfanfanfan626/orchestrate-agent-organization">Inspect the system</a></div>
+      <div class="actions"><a class="button primary" href="#first-trial">Try the planners</a><a class="button" href="#install">Install the Skill</a><a class="button" href="https://github.com/fanfanfanfanfan626/orchestrate-agent-organization">Inspect the system</a></div>
     </header>
     <section>
       <h2>One lifecycle, not a temporary org chart.</h2>
@@ -94,6 +94,14 @@
       </div>
     </section>
     <section id="install">
+      <div id="first-trial">
+        <p class="eyebrow">Five minutes · No account</p>
+        <h2>Start with a plan you can inspect.</h2>
+        <p>Download the repository and run these commands with Python 3.10+. No package dependencies, account or agent connection are needed.</p>
+        <pre>python skill/orchestrate-agent-organization/scripts/plan_portfolio.py skill/orchestrate-agent-organization/assets/first-trial-studio.json
+python skill/orchestrate-agent-organization/scripts/plan_capacity.py skill/orchestrate-agent-organization/assets/first-trial-capacity.json</pre>
+        <p>The example idea stays in discovery. The example roster is explicitly non-authoritative and capacity stays conservative. These tools print JSON; they do not create agents, change files or grant permission. <a href="https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/blob/main/QUICKSTART.md">Windows commands and expected results →</a></p>
+      </div>
       <p class="eyebrow">One-prompt install</p>
       <h2>Give the repository to your agent.</h2>
       <pre>Install orchestrate-agent-organization from https://github.com/fanfanfanfanfan626/orchestrate-agent-organization. Read AI_INSTALL.md first, copy the complete nested skill directory, and verify the installation before reporting success.</pre>

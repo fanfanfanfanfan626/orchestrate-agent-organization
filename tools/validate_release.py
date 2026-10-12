@@ -21,12 +21,16 @@ SKILL = ROOT / "skill" / "orchestrate-agent-organization"
 SKILL_MD = SKILL / "SKILL.md"
 VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 ARCHIVE = ROOT / "dist" / f"orchestrate-agent-organization-v{VERSION}.zip"
-EXPECTED_ARCHIVE_SHA256 = "28426316988555CE60786AC2275BA484F74C29D285D563BD397F609EE3AA8423"
+CHECKSUM = (ROOT / 'SHA256SUMS').read_text(encoding='utf-8').strip()
+EXPECTED_ARCHIVE_SHA256 = CHECKSUM.split()[0] if CHECKSUM else ''
 
 REQUIRED_DIRS = ("agents", "assets", "references", "scripts")
 REQUIRED_FILES = (
     "LICENSE",
     "agents/openai.yaml",
+    "assets/first-trial-capacity.json",
+    "assets/first-trial-studio.json",
+    "references/first-trial.md",
     "assets/assurance-manifest.template.json",
     "assets/evidence-attestation.template.json",
     "assets/integration-packet.template.json",
@@ -100,6 +104,12 @@ def validate_archive(errors: list[str], package_files: dict[str, bytes]) -> None
         fail(errors, f"archive SHA-256 mismatch: {digest}")
 
     with zipfile.ZipFile(ARCHIVE) as archive:
+        infos=archive.infolist()
+        if [i.filename for i in infos]!=['orchestrate-agent-organization/'+n for n in sorted(package_files)]:
+            fail(errors,'ZIP list/order differs from package')
+        for i in infos:
+            if i.date_time!=(1980,1,1,0,0,0) or i.compress_type!=zipfile.ZIP_STORED or i.create_system!=3 or i.external_attr!=0o100644<<16:
+                fail(errors,f'non-deterministic ZIP metadata: {i.filename}')
         members = {
             name: archive.read(name)
             for name in archive.namelist()
@@ -131,8 +141,12 @@ def main() -> int:
         if path.is_file()
     } if SKILL.is_dir() else {}
 
-    if VERSION != "1.0.3":
+    if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',VERSION):
         fail(errors, f"unexpected release version: {VERSION}")
+    if not re.fullmatch(r'[0-9A-F]{64}  '+re.escape(ARCHIVE.relative_to(ROOT).as_posix()),CHECKSUM):
+        fail(errors,'SHA256SUMS must contain one matching release entry')
+    if set(package_files)!=set(REQUIRED_FILES)|{'SKILL.md'}:
+        fail(errors,'Package must contain exactly the required source files')
     if (SKILL / "LICENSE").read_bytes() != (ROOT / "LICENSE").read_bytes():
         fail(errors, "package LICENSE must match the repository LICENSE")
 

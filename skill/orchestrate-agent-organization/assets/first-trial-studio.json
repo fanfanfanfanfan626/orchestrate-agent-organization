@@ -1,0 +1,10 @@
+{
+  "studio_id":"first-trial",
+  "company_policy_version":"company-v5",
+  "as_of":"2026-10-12",
+  "portfolio_active_limit":1,
+  "investment_envelope":{"investment_units":10,"human_attention_units":4,"maintenance_units":4,"risk_capacity_units":4},
+  "reserved_envelope":{"investment_units":0,"human_attention_units":0,"maintenance_units":0,"risk_capacity_units":0},
+  "portfolio_items":[{"id":"first-idea","title":"Test one product idea","current_state":"opportunity","founder_charter_status":"raw","founder_charter_ref":"decisions/first-idea.json","owner_seat_id":"human-founder","strategic_alignment":3,"option_value":3,"risk":1,"reversibility":5,"stop_conditions":["The next evidence action is not authorized"],"review_triggers":["One real user interview is recorded"],"next_evidence_action":"Ask one target user to describe the current workflow"}],
+  "product_assets":[],"reality_evidence":[],"capabilities":[],"decision_history":[]
+}

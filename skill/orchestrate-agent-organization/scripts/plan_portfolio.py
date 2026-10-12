@@ -516,9 +516,9 @@ def main() -> int:
     try:
         result = plan(load(args.input))
     except (OSError, json.JSONDecodeError, ValueError) as exc:
-        print(json.dumps({"valid": False, "error": str(exc)}, ensure_ascii=False, indent=2))
+        print(json.dumps({"valid": False, "error": str(exc)}, ensure_ascii=True, indent=2))
         return 2
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(result, ensure_ascii=True, indent=2))
     return 0
 
 

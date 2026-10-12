@@ -1,6 +1,8 @@
 # Persistent AI Studio
 
-[Website](https://fanfanfanfanfan626.github.io/orchestrate-agent-organization/) · [简体中文](README.zh-CN.md) · [AI installation guide](AI_INSTALL.md) · [Examples](EXAMPLES.md) · [Compatibility](COMPATIBILITY.md) · [Download v1.0.3 ZIP](dist/orchestrate-agent-organization-v1.0.3.zip) · [Contributing](CONTRIBUTING.md)
+**New here? [Try two read-only planners in five minutes](QUICKSTART.md).** No AI account or Skill installation is needed to inspect a portfolio recommendation and a conservative capacity plan.
+
+[Website](https://fanfanfanfanfan626.github.io/orchestrate-agent-organization/) · [简体中文](README.zh-CN.md) · [AI installation guide](AI_INSTALL.md) · [Examples](EXAMPLES.md) · [Compatibility](COMPATIBILITY.md) · [Download v1.0.4 ZIP](dist/orchestrate-agent-organization-v1.0.4.zip) · [Contributing](CONTRIBUTING.md)
 
 [![Release](https://img.shields.io/github/v/release/fanfanfanfanfan626/orchestrate-agent-organization?label=release)](https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/releases)
 [![Validation](https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/actions/workflows/validate.yml/badge.svg)](https://github.com/fanfanfanfanfan626/orchestrate-agent-organization/actions/workflows/validate.yml)
@@ -64,10 +66,10 @@ Use $orchestrate-agent-organization to turn this product idea into a human-gover
 
 For installation by another AI agent, use [AI_INSTALL.md](AI_INSTALL.md).
 
-The audited standalone package is [`dist/orchestrate-agent-organization-v1.0.3.zip`](dist/orchestrate-agent-organization-v1.0.3.zip). It includes the MIT license.
+The audited standalone package is [`dist/orchestrate-agent-organization-v1.0.4.zip`](dist/orchestrate-agent-organization-v1.0.4.zip). It includes the MIT license.
 
 ```text
-SHA-256: 28426316988555CE60786AC2275BA484F74C29D285D563BD397F609EE3AA8423
+SHA-256: 02474CA6789EB347ABBB0D6AD576314D0EE28054601B754C5762BC16D1E47073
 ```
 
 Copy-paste product-horizon, portfolio-review, cross-project, and serial-fallback scenarios are in [EXAMPLES.md](EXAMPLES.md).

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.4 — 2026-10-12
+
+- Add a five-minute, no-account first trial with two runnable fixtures; never label example rosters authoritative or turn a recommendation into authorization.
+- Add Python/PowerShell JSON and exit-code parity checks for all four tools, with valid, boundary and invalid cases. Release now requires the parity job.
+- Fix canonical pre-authorization stage ordering in PowerShell without changing allowed stages or decision policy.
+- Fix culture-dependent PowerShell tie-breaking and canonical output ordering to match Python Unicode scalar order, including punctuation and non-BMP characters. Regression cases cover task allocation, portfolio selection, permission errors and integration digests.
+- Escape non-ASCII characters in Python CLI JSON output to support legacy Windows stdout encodings without changing parsed JSON or canonical digest semantics.
+- Check exact package membership and deterministic ZIP metadata; derive validation from the versioned archive and checksum file.
+
 ## 1.0.3 — 2026-09-14
 
 - Fix the ZIP creator-platform field and use stored members so release bytes do not depend on the host OS or compression library.

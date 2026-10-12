@@ -5,6 +5,24 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+# Match Python Unicode scalar ordering, including non-BMP characters; never culture collation.
+function Get-UnicodeScalarSortKey {
+    param([AllowEmptyString()] [string]$Value)
+    $builder = [System.Text.StringBuilder]::new()
+    for ($index = 0; $index -lt $Value.Length;) {
+        $first = [int][char]$Value[$index]
+        if ([char]::IsHighSurrogate($Value[$index]) -and $index + 1 -lt $Value.Length -and [char]::IsLowSurrogate($Value[$index + 1])) {
+            $scalar = [char]::ConvertToUtf32($Value, $index)
+            $index += 2
+        } else {
+            $scalar = $first
+            $index += 1
+        }
+        [void]$builder.Append($scalar.ToString("X8", [Globalization.CultureInfo]::InvariantCulture))
+    }
+    return $builder.ToString()
+}
 $companyPolicyVersion = "company-v5"
 $plannerVersion = "studio-portfolio-v2"
 $portfolioStates = @("opportunity", "discovery", "funded", "build", "operate", "scale", "pause", "retire")
@@ -330,9 +348,9 @@ try {
 
     $rawItems = Get-IndexedObjects @(Get-ObjectArray (Get-Value $data "portfolio_items" @()) "portfolio_items") "portfolio_items"
     $items = @()
-    foreach ($itemId in @($rawItems.Keys | Sort-Object)) {
+    foreach ($itemId in @($rawItems.Keys | Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})) {
         $item = ConvertTo-PortfolioItem $itemId $rawItems[$itemId] $assets
-        $missing = @($item.reality_evidence_refs | Where-Object { -not $rawEvidence.ContainsKey($_) } | Sort-Object)
+        $missing = @($item.reality_evidence_refs | Where-Object { -not $rawEvidence.ContainsKey($_) } | Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_)}})
         if ($missing.Count -gt 0) { throw "$itemId references missing reality evidence: $($missing -join ', ')" }
         $derivedFreshness = $false
         $hasQualifyingExternalOutcome = $false
@@ -380,7 +398,7 @@ try {
             $candidates += [pscustomobject]@{ score = $score; item = $item; action = $base.action; next = $base.next; reasons = @($base.reasons) }
         }
     }
-    $candidates = @($candidates | Sort-Object -Property @{Expression = "score"; Descending = $true}, @{Expression = { $_.item.id }; Descending = $false})
+    $candidates = @($candidates | Sort-Object -Property @{Expression = "score"; Descending = $true}, @{Expression = { Get-UnicodeScalarSortKey ([string]$_.item.id) }; Descending = $false})
     $selected = @()
     $queued = @()
     $used = [ordered]@{}
@@ -433,7 +451,7 @@ try {
         selected_incremental_envelope = $used
         selected_new_investments = @($selected)
         queued_investments = @($queued)
-        recommendations = @($decisions | Sort-Object id)
+        recommendations = @($decisions | Sort-Object -Property @{Expression={Get-UnicodeScalarSortKey ([string]$_.id)}})
         control_note = "Recommendations do not bypass Founder, human, permission, runtime, release, or external-effect gates. Record the accountable decision and update persistent studio state after approval."
     } | ConvertTo-Json -Depth 12
     exit 0

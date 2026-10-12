@@ -9,6 +9,8 @@ Run one lead agent as the accountable organization steward. When work spans oppo
 
 ## Route before loading heavy governance
 
+For a human asking only to try the standalone deterministic planners, offer `references/first-trial.md`. The supplied fixtures are illustrative, not runtime authority, product evidence, or an execution mandate. They do not replace the governance reading required when actually using this Skill.
+
 Start with a lightweight machine preflight. Detect `studio_scope` when the request selects among projects, affects an operating Product Asset, must survive this task, changes investment, requests scale/pause/retire, or learns across projects. For studio scope, locate `STUDIO_STATE.json` or initialize it from `assets/studio-state.template.json`, read `references/studio-kernel.md`, and run the portfolio planner before creating an execution task graph. Then detect whether Founder discovery is required. Set `founder_discovery_required` and `founder_charter_status`; before `authorized`, sketch only reversible discovery, design, control, and verification work. Build only the minimum allowed task sketch needed for capacity planning, assign `decision_level`, and obtain an authoritative runtime snapshot. When child-agent tools are available, call the runtime's agent-list operation and pass the names of every currently active agent as `runtime_active_agents`; do not hand-count or infer occupancy. Use only the allowlisted source identifier accepted by the planner. Take the immutable active limit from runtime instructions or an exposed runtime limit. If no authoritative snapshot is available, omit agent names, label the source `unspecified`, and conservatively allow at most one new child.
 
 Run the platform-native planner:
